@@ -1,0 +1,24 @@
+#!/bin/bash
+# based on: amaroK info display script by eirc <eirc.eirc@gmail.com>
+# amarok2 info display script by fireandfuel <fireandfuel@hotmail.de>
+#
+# requirements: amaroK 2 (!)
+
+case "$1" in
+
+# Now Playing Info
+#qdbus org.kde.amarok /Player GetMetadata | awk '/artist:/{print substr($0,9)}' 
+#qdbus org.kde.amarok /Player GetMetadata | awk '/title:/{print substr($0,9)}' 
+artist) qdbus org.kde.amarok /Player GetMetadata | grep artist ;;
+title) qdbus org.kde.amarok /Player GetMetadata | grep title ;;
+album) qdbus org.kde.amarok /Player GetMetadata | grep album ;;
+year) qdbus org.kde.amarok /Player GetMetadata | grep year ;;
+genre) qdbus org.kde.amarok /Player GetMetadata | grep genre ;;
+progress)
+	curr=`qdbus org.kde.amarok /Player PositionGet`
+	tot=`qdbus org.kde.amarok /Player GetMetadata | awk '/mtime:/{print substr($0,8)}'`
+	if (( $tot )); then
+		expr $curr \* 100 / $tot
+	fi
+	;;
+esac
